@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rails-beneath-us",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-01",
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+
+  // GOTCHA 19: run_worker_first is NESTED inside assets. At top level wrangler
+  // warns "Unexpected fields found" and silently ignores it - the protection
+  // reads as configured while doing nothing.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*", "/audio/*", "/transcript/*", "/cover/*",
+      "/rss.xml", "/feed.xml", "/refresh", "/status", "/diag"
+    ]
+  },
+
+  // Declared so `wrangler deploy` cannot undo the dashboard state.
+  // Without workers_dev:false, deploy re-enables the workers.dev subdomain that
+  // was turned off by hand. Without the route, the custom domain is undeclared
+  // config that only exists in the dashboard.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "rails.stluker.com", "custom_domain": true }
+  ],
+
+
+  // GOTCHA 4: exactly ONE binding. Re-check with `cat wrangler.jsonc` after any
+  // interactive `wrangler r2 bucket create` - the prompt has appended a second before.
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "rails-beneath-us" }
+  ],
+
+  "triggers": { "crons": ["0 11 * * 1,3,5"] },  // 06:00 America/Chicago CDT, Mon/Wed/Fri
+
+  "vars": {
+    "PUBLIC_ORIGIN": "https://rails.stluker.com",
+    "PUBLISH_DAYS": "1,3,5",
+    // MEASURED, not guessed: two real episodes ran 186 and 192 wpm at speed 0.98.
+    // This value only affects the REPORTED duration. To make episodes actually
+    // longer, raise the word budget or lower NARRATOR_SPEED.
+    "WORDS_PER_MINUTE": "189",
+    "NARRATOR_SPEED": "0.86",
+    "SCRIPT_MODEL": "claude-sonnet-5"
+  }
+}

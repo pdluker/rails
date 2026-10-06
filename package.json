@@ -1,0 +1,17 @@
+{
+  "name": "rails-beneath-us",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check": "node scripts/selftest.mjs",
+    "migrate": "node scripts/upload-pool.mjs",
+    "deploy": "npm run check && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  },
+  "dependencies": {
+    "jsdom": "^30.0.1"
+  }
+}

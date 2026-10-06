@@ -1,0 +1,47 @@
+{
+ "version": 1,
+ "blockedIds": [
+  "RE0046",
+  "RE0074",
+  "RE0104",
+  "RE0121"
+ ],
+ "items": [
+  {
+   "id": "RE0070",
+   "title": "John Plumbe's end",
+   "year": 1857,
+   "reason": "RECOMMENDED: John Plumbe took his own life. Suicide should not be in a rotation that can reach a child, and no rewrite makes it suitable. The classifier missed it because the wording avoided the word suicide."
+  },
+  {
+   "id": "RE0095",
+   "title": "Camp Hill",
+   "year": 1856,
+   "reason": "RECOMMENDED: Camp Hill, 1856. At least sixty schoolchildren died when their excursion train caught fire. Children dying on a school outing is the single worst fit for a six-year-old audience in the whole corpus. The classifier rated it GENTLE_REWRITE; editorially it belongs here."
+  },
+  {
+   "id": "RE0046",
+   "title": "The Great Locomotive Chase",
+   "year": 1862,
+   "reason": "Executed as spies. Removed per instruction. NOTE: consider releasing - the chase itself is a fine adventure story if the executions are simply omitted."
+  },
+  {
+   "id": "RE0074",
+   "title": "Best Friend of Charleston explodes",
+   "year": 1831,
+   "reason": "Boiler explosion; two enslaved men injured, fireman died. Slavery plus graphic injury. Correctly out."
+  },
+  {
+   "id": "RE0104",
+   "title": "Killed by a snakehead",
+   "year": 1843,
+   "reason": "Passenger impaled through the carriage floor by a broken rail. Graphic mechanism of death. Correctly out."
+  },
+  {
+   "id": "RE0121",
+   "title": "The B&O's chief engineer is killed",
+   "year": 1835,
+   "reason": "Chief engineer thrown from a locomotive tender and killed. Correctly out, though milder than the others."
+  }
+ ]
+}

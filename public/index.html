@@ -1,0 +1,240 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F5B92E" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Five minutes of railway history and engineering, three mornings a week.">
+<title>The Rails Beneath Us</title>
+<style>
+/* Apple system palette and structure. The ochre and red are the show's own,
+   carried from the cover art so the page and the artwork read as one thing. */
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF;
+  --label:#1C1C1E; --label2:rgba(60,60,67,.6);
+  --sep:rgba(60,60,67,.18);
+  --tint:#B02A21; --ochre:#F5B92E; --ink:#123049;
+  --fill:rgba(120,120,128,.12); --fill2:rgba(120,120,128,.2);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000000; --card:#1C1C1E;
+    --label:#FFFFFF; --label2:rgba(235,235,245,.6);
+    --sep:rgba(84,84,88,.65);
+    --tint:#FF6961; --fill:rgba(120,120,128,.24); --fill2:rgba(120,120,128,.36);
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--label);
+  font:400 17px/1.47 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  letter-spacing:-.01em;
+  padding:0 0 env(safe-area-inset-bottom);
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* masthead: the cover art IS the header. It already carries the wordmark, so a
+   text title alongside it would say the same thing twice. */
+header{background:var(--ochre);color:var(--ink);text-align:center;
+  padding:calc(16px + env(safe-area-inset-top)) 16px 18px}
+/* Square guaranteed by the classic padding-top intrinsic-ratio box, not the CSS
+   aspect-ratio property. aspect-ratio silently no-ops in some renderers (older
+   WebKit, some in-app browsers, some screenshot/preview tools) and the failure
+   mode is exactly what happened here: a square 3000x3000 cover forced into a
+   tall box, then object-fit:cover crops both edges off the title. The padding
+   trick works everywhere and cannot silently fail. */
+.coverBox{
+  position:relative;width:min(220px,52vw);margin:0 auto;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 8px 24px rgba(18,48,73,.26);
+  background:var(--ochre);
+}
+.coverBox::before{content:"";display:block;padding-top:100%}
+.cover{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+}
+/* Only shown if the artwork fails to load. */
+.mark{display:none;font:700 clamp(28px,8vw,40px)/1.05 Georgia,"Iowan Old Style","Times New Roman",serif;
+  margin:0;color:#A6231F;letter-spacing:-.02em}
+.nocover .coverBox{display:none}
+.nocover .mark{display:block}
+.tag{margin:14px auto 0;max-width:34ch;font-size:15px;color:rgba(18,48,73,.78);letter-spacing:0}
+.follow{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;
+  min-height:40px;padding:0 18px;border-radius:20px;
+  background:rgba(18,48,73,.12);color:var(--ink);
+  font-size:15px;font-weight:590;text-decoration:none}
+.follow:active{background:rgba(18,48,73,.2)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+main{padding:16px 0 48px}
+
+/* today's episode: the page has one job */
+.today{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:20px;margin-bottom:28px}
+.when{font-size:13px;font-weight:590;color:var(--tint);margin:0 0 6px;letter-spacing:0}
+.today h2{font:700 clamp(24px,6vw,30px)/1.18 inherit;margin:0 0 8px;letter-spacing:-.025em}
+.blurb{margin:0;color:var(--label2);font-size:16px}
+
+.player{display:flex;align-items:center;gap:14px;margin:18px 0 4px}
+.play{flex:0 0 auto;width:56px;height:56px;border:0;border-radius:50%;
+  background:var(--tint);color:#fff;cursor:pointer;
+  display:grid;place-items:center;transition:transform .12s ease}
+.play:active{transform:scale(.94)}
+.play svg{width:22px;height:22px;fill:currentColor}
+.track{flex:1 1 auto;min-width:0}
+.bar{height:6px;border-radius:3px;background:var(--fill);
+  position:relative;cursor:pointer;touch-action:none}
+.bar>i{position:absolute;inset:0 auto 0 0;width:0;border-radius:3px;background:var(--tint)}
+.times{display:flex;justify-content:space-between;margin-top:8px;
+  font-size:13px;color:var(--label2);font-variant-numeric:tabular-nums}
+
+details{margin-top:18px;border-top:1px solid var(--sep);padding-top:14px}
+summary{list-style:none;cursor:pointer;font-size:15px;font-weight:590;color:var(--tint);
+  min-height:32px;display:flex;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";width:7px;height:7px;margin-left:8px;
+  border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(45deg) translateY(-2px);transition:transform .15s ease}
+details[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.detail{font-size:15px;color:var(--label2);margin:12px 0 0}
+.detail b{color:var(--label);font-weight:590}
+.note{margin-top:12px;padding:12px 14px;border-radius:12px;
+  background:var(--fill);font-size:15px;color:var(--label2)}
+
+.h3{font:600 22px/1.2 inherit;margin:0 0 12px;padding:0 4px;letter-spacing:-.02em}
+.list{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;width:100%;
+  padding:14px 16px;min-height:64px;border:0;background:none;
+  text-align:left;font:inherit;color:inherit;cursor:pointer}
+.row+.row{box-shadow:inset 0 1px 0 var(--sep)}
+.row:active{background:var(--fill)}
+.thumb{flex:0 0 auto;width:52px;height:52px;border-radius:10px;object-fit:cover;
+  background:var(--fill2)}
+.mini{flex:0 0 auto;width:36px;height:36px;border-radius:50%;
+  background:var(--fill2);display:grid;place-items:center}
+.mini svg{width:13px;height:13px;fill:var(--label)}
+.rowtext{flex:1 1 auto;min-width:0}
+.rowtitle{font-size:16px;font-weight:590;letter-spacing:-.015em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rowmeta{font-size:14px;color:var(--label2);margin-top:1px}
+
+.empty{padding:48px 20px;text-align:center;color:var(--label2)}
+a{color:var(--tint)}
+:focus-visible{outline:3px solid var(--tint);outline-offset:3px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+
+<header id="masthead"><div class="wrap">
+  <h1 class="vh">The Rails Beneath Us</h1>
+  <div class="coverBox">
+    <img class="cover" src="/cover/show.jpg"
+         alt="A green steam locomotive emerging from a stone tunnel beside a viaduct, in the style of a vintage railway poster"
+         onerror="document.getElementById('masthead').classList.add('nocover')">
+  </div>
+  <p class="mark" aria-hidden="true">The Rails Beneath Us</p>
+  <p class="tag">Five minutes of railway history, three mornings a week.</p>
+  <a class="follow" href="/rss.xml">Follow the show</a>
+</div></header>
+
+<main class="wrap"><div id="app"><p class="empty">Loading the latest episode</p></div></main>
+
+<script>
+var PLAY='<svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.54.84l10-6.5a1 1 0 0 0 0-1.68l-10-6.5A1 1 0 0 0 8 5.5z"/></svg>';
+var PAUSE='<svg viewBox="0 0 24 24"><path d="M7 4h3.2v16H7zm6.8 0H17v16h-3.2z"/></svg>';
+var WHEN={exact_day:'On this day',same_month:'This month in history',same_season:'This season in history'};
+
+function clock(s){return (!isFinite(s)||s<0)?'--:--':Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+function el(t,cls,txt){var n=document.createElement(t);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n;}
+
+function buildToday(e){
+  var c=el('section','today');
+  c.appendChild(el('p','when',WHEN[e.matchKind]||'From the archive'));
+  c.appendChild(el('h2',null,e.title));
+  if(e.summary)c.appendChild(el('p','blurb',e.summary));
+
+  var audio=new Audio('/audio/'+e.date+'.mp3'); audio.preload='metadata';
+  var p=el('div','player');
+  var btn=el('button','play'); btn.innerHTML=PLAY; btn.setAttribute('aria-label','Play episode');
+  var track=el('div','track'), bar=el('div','bar'), fill=document.createElement('i');
+  bar.appendChild(fill);
+  var times=el('div','times'), now=el('span',null,'0:00');
+  // Real duration from the file, never the stored estimate. A wrong
+  // WORDS_PER_MINUTE can then never put a false number in front of a listener.
+  var dur=el('span',null,e.duration||'--:--');
+  times.appendChild(now); times.appendChild(dur);
+  track.appendChild(bar); track.appendChild(times);
+  p.appendChild(btn); p.appendChild(track); c.appendChild(p);
+
+  audio.addEventListener('loadedmetadata',function(){dur.textContent=clock(audio.duration);});
+  audio.addEventListener('timeupdate',function(){
+    now.textContent=clock(audio.currentTime);
+    if(audio.duration)fill.style.width=(audio.currentTime/audio.duration*100)+'%';
+  });
+  audio.addEventListener('ended',function(){btn.innerHTML=PLAY;btn.setAttribute('aria-label','Play episode');});
+  btn.addEventListener('click',function(){
+    if(audio.paused){audio.play();btn.innerHTML=PAUSE;btn.setAttribute('aria-label','Pause episode');}
+    else{audio.pause();btn.innerHTML=PLAY;btn.setAttribute('aria-label','Play episode');}
+  });
+  function seek(ev){
+    var r=bar.getBoundingClientRect();
+    var x=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+    if(audio.duration)audio.currentTime=Math.max(0,Math.min(1,x/r.width))*audio.duration;
+  }
+  bar.addEventListener('click',seek);
+  bar.addEventListener('touchmove',function(ev){ev.preventDefault();seek(ev);},{passive:false});
+
+  var d=document.createElement('details');
+  var sm=document.createElement('summary'); sm.textContent='Sources and notes'; d.appendChild(sm);
+  if(e.featTitle){var f=el('p','detail');f.innerHTML='<b>Also in this episode:</b> ';
+    f.appendChild(document.createTextNode(e.featTitle)); d.appendChild(f);}
+  if(e.sources&&e.sources.length){var s=el('p','detail');s.innerHTML='<b>Sources:</b> ';
+    s.appendChild(document.createTextNode(e.sources.join('  |  '))); d.appendChild(s);}
+  var t=el('p','detail'), link=el('a',null,'Read the transcript');
+  link.href='/transcript/'+e.date+'.txt'; t.appendChild(link); d.appendChild(t);
+  c.appendChild(d);
+  return c;
+}
+
+function buildRow(e){
+  var b=el('button','row');
+  var th=document.createElement('img'); th.className='thumb'; th.src='/cover/show.jpg';
+  th.alt=''; th.loading='lazy'; th.onerror=function(){this.remove();};
+  b.appendChild(th);
+  var m=el('div','mini'); m.innerHTML=PLAY; b.appendChild(m);
+  var tx=el('div','rowtext');
+  tx.appendChild(el('div','rowtitle',e.title));
+  var d=new Date(e.date+'T00:00:00');
+  tx.appendChild(el('div','rowmeta',
+    d.toLocaleDateString(undefined,{month:'long',day:'numeric'})+'   '+(e.duration||'')));
+  b.appendChild(tx);
+  var audio=new Audio('/audio/'+e.date+'.mp3');
+  b.addEventListener('click',function(){
+    if(audio.paused){audio.play();m.innerHTML=PAUSE;}else{audio.pause();m.innerHTML=PLAY;}
+  });
+  audio.addEventListener('ended',function(){m.innerHTML=PLAY;});
+  return b;
+}
+
+fetch('/api/episodes').then(function(r){return r.json();}).then(function(eps){
+  var app=document.getElementById('app'); app.innerHTML='';
+  if(!eps||!eps.length){
+    app.appendChild(el('p','empty','The first episode arrives soon. Follow the show to be there for it.'));
+    return;
+  }
+  var sorted=eps.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+  app.appendChild(buildToday(sorted[0]));
+  if(sorted.length>1){
+    app.appendChild(el('h3','h3','Earlier episodes'));
+    var list=el('div','list');
+    sorted.slice(1).forEach(function(e){list.appendChild(buildRow(e));});
+    app.appendChild(list);
+  }
+}).catch(function(){
+  document.getElementById('app').innerHTML=
+    '<p class="empty">The episode list did not load. Refresh to try again.</p>';
+});
+</script></body></html>
