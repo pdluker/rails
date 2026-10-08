@@ -27,7 +27,7 @@ async function claude(env, system, messages, maxTokens = 8000) {
   // thinking and return zero text blocks. max_tokens must cover thinking AND output,
   // and thinking is disabled outright for this show - the task is a short scripted
   // narration against locked facts, which needs no reasoning budget.
-  const model = env.SCRIPT_MODEL || 'claude-sonnet-5';
+  const model = env.SCRIPT_MODEL || 'claude-sonnet-5-5';
   const base = { model, max_tokens: maxTokens, system, messages };
 
   async function call(body) {
@@ -268,7 +268,7 @@ export default {
 
     if (p === '/diag') {
       if (!auth(req, env)) return J({ error: 'unauthorized' }, 401);
-      const model = env.SCRIPT_MODEL || 'claude-sonnet-5';
+      const model = env.SCRIPT_MODEL || 'claude-sonnet-5-5';
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },

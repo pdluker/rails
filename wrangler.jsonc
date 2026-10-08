@@ -44,6 +44,6 @@
     // longer, raise the word budget or lower NARRATOR_SPEED.
     "WORDS_PER_MINUTE": "189",
     "NARRATOR_SPEED": "0.86",
-    "SCRIPT_MODEL": "claude-sonnet-5"
+    "SCRIPT_MODEL": "claude-sonnet-5-5"
   }
 }
