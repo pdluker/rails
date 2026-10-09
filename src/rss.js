@@ -18,7 +18,7 @@ export function buildRss(episodes, origin, coverUrl) {
   <title>The Rails Beneath Us</title>
   <link>${origin}</link>
   <language>en-us</language>
-  <description>Five minutes of railway history and engineering, three mornings a week.</description>
+  <description>Five minutes of railway history and engineering, every Wednesday morning.</description>
   <itunes:author>ST Luker</itunes:author>
   <itunes:image href="${coverUrl}"/>
   <itunes:category text="History"/>
