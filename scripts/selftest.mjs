@@ -281,12 +281,18 @@ t('thinking disabled and token budget covers it', () => {
   ok(m && Number(m[1]) >= 4000, `max_tokens ${m ? m[1] : '?'} too small to survive a thinking budget`);
   ok(src.includes('truncated'), 'no truncation flag');
 });
-t('cron is Mon/Wed/Fri', () => ok(wr.includes('0 11 * * 1,3,5'), 'cron not M/W/F'));
+t('cron is Mon/Wed/Fri', () => ok(wr.includes('0 11 * * MON,WED,FRI'), 'cron not M/W/F (use day names: Cloudflare 1 = Sunday)'));
 t('cron and PUBLISH_DAYS agree', () => {
   const cron = wr.match(/"crons":\s*\["0 11 \* \* ([^"]+)"\]/);
   const days = wr.match(/"PUBLISH_DAYS":\s*"([^"]+)"/);
   ok(cron && days, 'cron or PUBLISH_DAYS missing');
-  eq(cron[1], days[1], 'cron schedule and PUBLISH_DAYS have drifted apart');
+  // The cron uses day NAMES (Cloudflare numbers weekdays 1-7 from Sunday) and
+  // PUBLISH_DAYS uses JS getUTCDay() numbers, so compare the days they mean,
+  // not the text. Comparing text is what kept "1,3,5" in the cron (= Sun/Tue/Thu).
+  const JS_DAY = { SUN: 0, MON: 1, TUE: 2, WED: 3, THU: 4, FRI: 5, SAT: 6 };
+  const cronDays = cron[1].split(',').map(n => JS_DAY[n.trim().toUpperCase()]);
+  ok(cronDays.every(n => n !== undefined), `cron weekdays must be names, got ${cron[1]}`);
+  eq(cronDays.sort().join(','), days[1].split(',').map(Number).sort().join(','), 'cron schedule and PUBLISH_DAYS have drifted apart');
 });
 t('month-precision items match anywhere in their month', () => {
   const m = pool.items.filter(i => i.precision === 'MONTH');
