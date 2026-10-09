@@ -194,7 +194,7 @@ export default {
   async scheduled(evt, env) {
     const today = new Date(evt.scheduledTime || Date.now());
     const dateStr = today.toISOString().slice(0, 10);
-    const days = String(env.PUBLISH_DAYS || '1,3,5').split(',').map(Number);
+    const days = String(env.PUBLISH_DAYS || '3').split(',').map(Number);
     if (!days.includes(today.getUTCDay())) {         // belt and braces if cron fires wide
       await recordRun(env, { trigger: 'cron', cron: evt.cron, date: dateStr, skipped: 'off day' });
       return;

@@ -216,9 +216,9 @@ t('hero does not push the episode below the fold', () => {
   const m = html.match(/\.coverBox\{[\s\S]*?width:min\((\d+)px/);
   ok(m && Number(m[1]) <= 260, `cover hero width ${m ? m[1] : '?'}px is too tall for a mobile first screen`);
 });
-t('feed description matches the M/W/F cadence', () => {
+t('feed description does not promise a daily cadence', () => {
   const x = buildRss([], 'https://x.dev', 'c');
-  ok(!/every weekday/i.test(x), 'feed still promises every weekday - cadence is Mon/Wed/Fri');
+  ok(!/every weekday/i.test(x), 'feed still promises every weekday - cadence is Wednesdays');
 });
 t('rss escapes ampersand in title', () =>
   ok(buildRss([{ date: 'd', title: 'B&O', summary: '', bytes: 1, duration: '1:00', publishedAt: new Date().toISOString() }], 'o', 'c').includes('B&amp;O'), 'unescaped'));
@@ -281,7 +281,7 @@ t('thinking disabled and token budget covers it', () => {
   ok(m && Number(m[1]) >= 4000, `max_tokens ${m ? m[1] : '?'} too small to survive a thinking budget`);
   ok(src.includes('truncated'), 'no truncation flag');
 });
-t('cron is Mon/Wed/Fri', () => ok(wr.includes('0 11 * * MON,WED,FRI'), 'cron not M/W/F (use day names: Cloudflare 1 = Sunday)'));
+t('cron is Wednesdays', () => ok(wr.includes('0 11 * * WED'), 'cron not WED (use day names: Cloudflare 1 = Sunday)'));
 t('cron and PUBLISH_DAYS agree', () => {
   const cron = wr.match(/"crons":\s*\["0 11 \* \* ([^"]+)"\]/);
   const days = wr.match(/"PUBLISH_DAYS":\s*"([^"]+)"/);
