@@ -804,3 +804,23 @@ NOT YET DONE - requires your machine/secrets
   timbre can differ slightly between models: listen to the Wed 10/7 episode.
   To revert, change model_id back in src/tts.js and deploy.
 - selftest 73/73. Deployed as version 7137ac00. No other code changes.
+
+## 2026-10-09 - ROOT CAUSE of the whole outage: Cloudflare weekday numbering
+
+runs/log.json showed cron firing Tue 10/6 and Thu 10/8, each "skipped: off day".
+Cloudflare cron weekdays are 1-7 with 1 = SUNDAY, so "0 11 * * 1,3,5" ran
+Sun/Tue/Thu; PUBLISH_DAYS uses JS getUTCDay (1 = Monday), so every run skipped.
+Cron now "0 11 * * MON,WED,FRI" (names, per Cloudflare's own advice); the self
+test compares meaning, not text. Deployed d6860a07 13:02 UTC.
+The same change set SCRIPT_MODEL to "claude-sonnet-5-5" (not a real model id) in
+wrangler.jsonc and both index.js fallbacks - would have failed Monday's script
+call. Reverted to "claude-sonnet-5". Deployed dec08662, 20:36 UTC. 73/73.
+
+Feed: both 2026-08-30-published episodes (Oregon Pony, Minnesota) removed from
+episodes.json - known errors. Audio left in R2. Backup of the prior manifest is
+in the session scratchpad (episodes.backup-2026-10-09.json). Feed now 1 item.
+First scheduled episode under the fixed cron: Mon 2026-10-12 11:00 UTC.
+
+## 2026-10-09 (later) - CORRECTION
+claude-sonnet-5-5 IS a valid model id (pod and stl-weekly run on it). Restored it in index.js and wrangler.jsonc; /diag returned 200.
+
