@@ -39,8 +39,10 @@ async function claude(env, system, messages, maxTokens = 8000) {
     return { ok: r.ok, status: r.status, text: await r.text() };
   }
 
-  // Try with thinking explicitly disabled; fall back if the model rejects the param.
-  let res = await call({ ...base, thinking: { type: 'disabled' } });
+  // Ask for minimal thinking (Sonnet 5.5 rejects 'disabled' with a 400, and the
+  // fallback then ran full adaptive thinking: the Nov 4 no-text failure). Fall back
+  // if the model rejects the param.
+  let res = await call({ ...base, thinking: { type: 'between_tools' } });
   if (!res.ok && res.status === 400 && /thinking/i.test(res.text)) {
     res = await call(base);
   }

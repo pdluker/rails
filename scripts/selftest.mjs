@@ -274,9 +274,9 @@ t('empty script is refused, not published', () => {
   ok(src.includes('tts produced zero bytes'), 'no audio byte guard');
   ok(src.includes('anthropic returned no text'), 'no empty-completion guard');
 });
-t('thinking disabled and token budget covers it', () => {
+t('thinking minimal and token budget covers it', () => {
   const src = fs.readFileSync(new URL('../src/index.js', import.meta.url), 'utf8');
-  ok(/thinking:\s*\{\s*type:\s*'disabled'/.test(src), 'thinking not disabled');
+  ok(/thinking:\s*\{\s*type:\s*'between_tools'/.test(src), 'thinking not on between_tools');
   const m = src.match(/maxTokens\s*=\s*(\d+)/);
   ok(m && Number(m[1]) >= 4000, `max_tokens ${m ? m[1] : '?'} too small to survive a thinking budget`);
   ok(src.includes('truncated'), 'no truncation flag');
