@@ -25,7 +25,7 @@ const wj = (env, k, v) => env.BUCKET.put(k, JSON.stringify(v), { httpMetadata: {
 async function claude(env, system, messages, maxTokens = 8000) {
   // GOTCHA 21: reasoning-capable models can spend the ENTIRE max_tokens budget on
   // thinking and return zero text blocks. max_tokens must cover thinking AND output,
-  // and thinking is disabled outright for this show - the task is a short scripted
+  // and thinking is kept to its minimum (between_tools) for this show - the task is a short scripted
   // narration against locked facts, which needs no reasoning budget.
   const model = env.SCRIPT_MODEL || 'claude-sonnet-5-5';
   const base = { model, max_tokens: maxTokens, system, messages };
